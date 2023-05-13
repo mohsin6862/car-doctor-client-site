@@ -23,9 +23,13 @@ const Services = () => {
                     services?.map(service=> <Service key={service._id} service={service }></Service>)
                    }
                 
+                
 
 
             </div>
+            <div className='text-center my-5 '>
+                <button className="btn btn-outline btn-secondary">More Service</button>
+                </div>
         </div>
 
     );
