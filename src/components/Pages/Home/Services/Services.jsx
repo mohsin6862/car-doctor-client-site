@@ -27,7 +27,7 @@ const Services = () => {
 
 
             </div>
-            <div className='text-center my-5 '>
+            <div className='text-center my-10'>
                 <button className="btn btn-outline btn-secondary">More Service</button>
                 </div>
         </div>
