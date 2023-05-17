@@ -52,6 +52,28 @@ const ViewBooking = () => {
         })
 
     }
+
+    const handleConfirm = (id)=>{
+        fetch(`http://localhost:5000/bookings/${id}`,{
+            method : 'PATCH',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body : JSON.stringify({status:'confirm'})
+            
+        })
+        .then(res=>res.json())
+        .then(data =>{
+            console.log(data)
+            if(data.modifiedCount >0){
+                const remaining = allBooking.filter(bk => bk._id !== id);
+                const updated = allBooking.find(bk => bk._id === id)
+                updated.status='confirm'
+                const newConfirmBooking = [updated , ...remaining]
+                setAllBooking(newConfirmBooking)
+            }
+        })
+    }
     return (
         <div>
             <h1 className='text-4xl font-bold text-center my-8'>Total Bookings {allBooking?.length}</h1>
@@ -62,9 +84,11 @@ const ViewBooking = () => {
                     <thead>
                         <tr>
                             
+                            <th></th>
                             <th>Services</th>
                             <th>Date</th>
                             <th>Price</th>
+                            <th>Status</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -72,7 +96,7 @@ const ViewBooking = () => {
                         {/* row 1 */}
                         {
                             allBooking?.map(book => <BookingsTable
-                                key={book._id} book={book} handleDelete={handleDelete}
+                                key={book._id} book={book} handleDelete={handleDelete} handleConfirm={handleConfirm}
                             >
 
                             </BookingsTable>)
