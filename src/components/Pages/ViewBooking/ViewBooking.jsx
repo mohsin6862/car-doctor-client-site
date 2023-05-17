@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../../Providers/AuthProvider';
 import BookingsTable from './BookingsTable';
+import Swal from 'sweetalert2';
 
 
 const ViewBooking = () => {
@@ -14,21 +15,53 @@ const ViewBooking = () => {
                 console.log(data)
                 setAllBooking(data)
             })
-    }, [])
+    }, []);
+    const handleDelete = (id)=>{
+   
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(`http://localhost:5000/bookings/${id}`,{
+                method : 'DELETE'
+            })
+            .then(res=>res.json())
+            .then(data =>{
+
+                if(data.deletedCount>0){
+
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                      )
+                      const remaining = allBooking?.filter(bk => bk._id !== id)
+                      setAllBooking(remaining)
+                }
+
+
+            })
+          
+          }
+        })
+
+    }
     return (
         <div>
-            <h1 className='text-4xl font-bold text-center'>Total Bookings {allBooking?.length}</h1>
+            <h1 className='text-4xl font-bold text-center my-8'>Total Bookings {allBooking?.length}</h1>
 
             <div className="overflow-x-auto w-full">
                 <table className="table w-full">
                     {/* head */}
                     <thead>
                         <tr>
-                            <th>
-                                <label>
-                                    <input type="checkbox" className="checkbox" />
-                                </label>
-                            </th>
+                            
                             <th>Services</th>
                             <th>Date</th>
                             <th>Price</th>
@@ -37,17 +70,17 @@ const ViewBooking = () => {
                     </thead>
                     <tbody>
                         {/* row 1 */}
-                    {
-                        allBooking.map(book => <BookingsTable
-                        key={book._id} book={book}
-                        >
+                        {
+                            allBooking?.map(book => <BookingsTable
+                                key={book._id} book={book} handleDelete={handleDelete}
+                            >
 
-                        </BookingsTable>)
-                    }
-                       
-                      
+                            </BookingsTable>)
+                        }
+
+
                     </tbody>
-           
+
 
                 </table>
             </div>
